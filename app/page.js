@@ -193,7 +193,7 @@ export default function Page() {
               <Flame className="mr-1 h-3.5 w-3.5" /> 25% / mo
               <span className="ml-2 rounded px-1 text-[10px] uppercase tracking-wider text-white/70">Demo</span>
             </Badge>
-            <Button className="hidden bg-white text-black hover:bg-white/90 md:inline-flex" type="button" aria-label="Sign in">Sign In</Button>
+            <Button className="hidden bg-white text-black hover:bg-white/90 md:inline-flex" type="button" aria-label="Sign In">Sign In</Button>
           </div>
         </div>
       </header>
@@ -208,7 +208,7 @@ export default function Page() {
         {/* ВАЖНО: фиксируем выравнивание по верху на десктопе */}
         <div className="grid gap-10 md:grid-cols-2 md:items-start" id="main">
           <div>
-            <(reduced ? "div" : fm.div)
+            <MotionDiv
               initial={!reduced ? { y: 12, opacity: 0 } : undefined}
               animate={!reduced ? { y: 0, opacity: 1 } : undefined}
               transition={{ duration: 0.6 }}
@@ -216,12 +216,12 @@ export default function Page() {
               <h1 id="hero-title" className="text-4xl font-bold leading-tight tracking-tight md:text-6xl">
                 Invest in Stability with <span className="bg-gradient-to-r from-blue-300 to-red-400 bg-clip-text text-transparent">USA₮</span>
               </h1>
-            </(reduced ? "div" : fm.div)>
+            </MotionDiv>
             <p className="mt-5 max-w-xl text-base text-white/70 md:text-lg">
               Buy and invest in the USA₮ stablecoin. Deposit in popular cryptocurrencies and earn <span className="text-white">up to 25% monthly</span>. <span className="text-white/60">(Demo only)</span>
             </p>
             <div className="mt-7 flex flex-wrap items-center gap-3">
-              <Button className="group bg-gradient-to-r from-blue-400 to-red-500 text-black hover:from-blue-300 hover:to-red-400" type="button" aria-label="Get started">
+              <Button className="group bg-gradient-to-r from-blue-400 to-red-500 text-black hover:from-blue-300 hover:to-red-400" type="button" aria-label="Get Started">
                 Get Started
                 <ArrowUpRight className="ml-1.5 h-4 w-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </Button>
@@ -236,7 +236,7 @@ export default function Page() {
 
           {/* Карточка с табами — резерв высоты и растяжение контента */}
           <div className="relative">
-            <(reduced ? "div" : fm.div)
+            <MotionDiv
               initial={!reduced ? { opacity: 0, scale: 0.98 } : undefined}
               animate={!reduced ? { opacity: 1, scale: 1 } : undefined}
               transition={{ duration: 0.7 }}
@@ -380,7 +380,7 @@ export default function Page() {
                   </TabsContent>
                 </div>
               </Tabs>
-            </(reduced ? "div" : fm.div)>
+            </MotionDiv>
           </div>
         </div>
 
@@ -406,7 +406,7 @@ export default function Page() {
       <section id="invest" className="mx-auto mt-16 max-w-7xl px-4">
         <div className="mb-6 flex items-end justify-between">
           <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">Plans</h2>
-          <div className="text-sm text-white/60">25% / month for 1 month term <Badge className="ml-2 bg-white/10 text-white">Demo</Badge></div>
+          <div className="text-sm text-white/60">25% / month for 1 month term <Badge className="ml-2 bg-white/10 text-white">Demo</</div>
         </div>
         <div className="grid gap-6 md:grid-cols-3">
           {PLANS.map((p) => (
@@ -486,10 +486,10 @@ export default function Page() {
             <h3 className="text-2xl font-semibold">Ready to start?</h3>
             <p className="mt-2 text-white/70">Create an account and connect your wallet. First operations take minutes.</p>
           </div>
-          <div className="flex flex-wrap items-center justify-end gap-3">
-            <Button variant="outline" className="border-white/20 bg-white/10 text-white hover:bg-white/20" type="button" aria-label="Open account">Open Account</Button>
-            <Button className="bg-white text-black hover:bg-white/90" type="button" aria-label="Connect wallet">Connect Wallet</Button>
-          </div>
+        </div>
+        <div className="flex flex-wrap items-center justify-end gap-3 mt-4">
+          <Button variant="outline" className="border-white/20 bg-white/10 text-white hover:bg-white/20" type="button" aria-label="Open account">Open Account</Button>
+          <Button className="bg-white text-black hover:bg-white/90" type="button" aria-label="Connect wallet">Connect Wallet</Button>
         </div>
       </section>
 
