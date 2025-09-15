@@ -206,7 +206,7 @@ export default function Page() {
             <USFlag className="h-20 w-40" />
           </div>
         </div>
-        <div className="grid items-center gap-10 md:grid-cols-2" id="main">
+        <div className="grid gap-10 md:grid-cols-2 md:items-start" id="main">
           <div>
             <MotionDiv
               initial={!reduced ? { y: 12, opacity: 0 } : undefined}
