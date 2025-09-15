@@ -100,7 +100,7 @@ function useCountUp(value, duration = 600) {
     let raf;
     const step = (t) => {
       const p = Math.min(1, (t - start) / duration);
-      const eased = 1 - Math.pow(1 - p, 3); // easeOutCubic
+      const eased = 1 - Math.pow(1 - p, 3);
       setDisplay(from + (to - from) * eased);
       if (p < 1) raf = requestAnimationFrame(step);
       else fromRef.current = to;
@@ -109,6 +109,86 @@ function useCountUp(value, duration = 600) {
     return () => cancelAnimationFrame(raf);
   }, [value, duration]);
   return display;
+}
+
+/* ================================
+   American awwwards background
+================================ */
+function AmericanAwwwardsBackground({ reduced = false }) {
+  return (
+    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden>
+      {/* Base deep navy gradient */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(60% 60% at 15% 10%, rgba(37,99,235,0.20) 0%, rgba(0,0,0,0) 60%), radial-gradient(60% 60% at 85% 90%, rgba(239,68,68,0.18) 0%, rgba(0,0,0,0) 60%), linear-gradient(180deg, #080B17 0%, #070912 100%)",
+        }}
+      />
+
+      {/* Subtle moving diagonal stripes (flag vibe) */}
+      {!reduced && (
+        <fm.div
+          initial={{ x: 0, opacity: 0.25 }}
+          animate={{ x: ["0%", "-6%", "0%"] }}
+          transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute inset-0"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(-14deg, rgba(239,68,68,0.06) 0 14px, rgba(0,0,0,0) 14px 54px)",
+            mixBlendMode: "screen",
+          }}
+        />
+      )}
+
+      {/* Star field at top-left with soft fade */}
+      <div
+        className="absolute left-0 top-0 h-[65%] w-[65%] opacity-[0.14]"
+        style={{
+          WebkitMaskImage:
+            "radial-gradient(60% 60% at 25% 20%, #000 0%, rgba(0,0,0,0.2) 55%, transparent 85%)",
+          maskImage:
+            "radial-gradient(60% 60% at 25% 20%, #000 0%, rgba(0,0,0,0.2) 55%, transparent 85%)",
+        }}
+      >
+        <svg viewBox="0 0 400 400" className="h-full w-full">
+          <defs>
+            <pattern id="us-stars" width="40" height="40" patternUnits="userSpaceOnUse">
+              <polygon
+                points="10,2 12.6,8.2 19.4,8.4 13.9,12.3 15.8,18.8 10,15.1 4.2,18.8 6.1,12.3 0.6,8.4 7.4,8.2"
+                fill="white"
+              />
+              <polygon
+                points="30,22 32.6,28.2 39.4,28.4 33.9,32.3 35.8,38.8 30,35.1 24.2,38.8 26.1,32.3 20.6,28.4 27.4,28.2"
+                fill="white"
+              />
+            </pattern>
+          </defs>
+          <rect x="0" y="0" width="400" height="400" fill="url(#us-stars)" />
+        </svg>
+      </div>
+
+      {/* Extra glow orbs (very soft) */}
+      {!reduced && (
+        <>
+          <fm.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 0.9, scale: 1 }}
+            transition={{ duration: 1.2 }}
+            className="absolute -top-24 -left-24 h-[520px] w-[520px] rounded-full blur-3xl"
+            style={{ background: "radial-gradient(60% 60% at 50% 50%, rgba(37,99,235,0.26), transparent)" }}
+          />
+          <fm.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 0.8, scale: 1 }}
+            transition={{ duration: 1.2, delay: 0.15 }}
+            className="absolute -bottom-24 -right-24 h-[560px] w-[560px] rounded-full blur-3xl"
+            style={{ background: "radial-gradient(60% 60% at 50% 50%, rgba(239,68,68,0.22), transparent)" }}
+          />
+        </>
+      )}
+    </div>
+  );
 }
 
 /* ================================
@@ -153,31 +233,7 @@ export default function Page() {
 
   return (
     <div className="min-h-screen bg-[#070912] text-white antialiased selection:bg-blue-500/40 selection:text-white">
-      {/* Ambient glows for awwwards feel */}
-      {!reduced && (
-        <>
-          <fm.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.2 }}
-            className="pointer-events-none fixed -top-32 -left-24 z-0 h-[560px] w-[560px] rounded-full blur-3xl"
-            style={{
-              background:
-                "radial-gradient(50% 50% at 50% 50%, rgba(37,99,235,0.35) 0%, transparent 60%)",
-            }}
-          />
-          <fm.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 0.9, scale: 1 }}
-            transition={{ duration: 1.2, delay: 0.1 }}
-            className="pointer-events-none fixed -bottom-32 -right-24 z-0 h-[600px] w-[600px] rounded-full blur-3xl"
-            style={{
-              background:
-                "radial-gradient(50% 50% at 50% 50%, rgba(239,68,68,0.28) 0%, transparent 60%)",
-            }}
-          />
-        </>
-      )}
+      <AmericanAwwwardsBackground reduced={reduced} />
 
       {/* Header */}
       <header className="sticky top-0 z-30 border-b border-white/10 bg-[#070912]/70 backdrop-blur-xl">
@@ -191,25 +247,15 @@ export default function Page() {
             />
           </Link>
           <nav className="hidden items-center gap-8 text-sm md:flex" aria-label="Primary">
-            <a href="#buy" className="text-white/70 transition hover:text-white">
-              Buy
-            </a>
-            <a href="#invest" className="text-white/70 transition hover:text-white">
-              Invest
-            </a>
-            <a href="#stats" className="text-white/70 transition hover:text-white">
-              Stats
-            </a>
-            <a href="#faq" className="text-white/70 transition hover:text-white">
-              FAQ
-            </a>
+            <a href="#buy" className="text-white/70 transition hover:text-white">Buy</a>
+            <a href="#invest" className="text-white/70 transition hover:text-white">Invest</a>
+            <a href="#stats" className="text-white/70 transition hover:text-white">Stats</a>
+            <a href="#faq" className="text-white/70 transition hover:text-white">FAQ</a>
           </nav>
           <div className="flex items-center gap-3">
             <Badge className="bg-white/10 text-white backdrop-blur border border-white/10">
               <Flame className="mr-1 h-3.5 w-3.5" /> 25% / mo
-              <span className="ml-2 rounded bg-white/10 px-1 text-[10px] uppercase tracking-wider text-white/70">
-                Demo
-              </span>
+              <span className="ml-2 rounded bg-white/10 px-1 text-[10px] uppercase tracking-wider text-white/70">Demo</span>
             </Badge>
             <Button className="hidden bg-white text-black hover:bg-white/90 md:inline-flex" type="button">
               Sign In
@@ -219,11 +265,7 @@ export default function Page() {
       </header>
 
       {/* Hero */}
-      <section
-        id="buy"
-        className="relative z-10 mx-auto max-w-7xl px-4 pt-14 md:pt-28"
-        aria-labelledby="hero-title"
-      >
+      <section id="buy" className="relative z-10 mx-auto max-w-7xl px-4 pt-14 md:pt-28" aria-labelledby="hero-title">
         <div className="grid gap-12 md:grid-cols-2 md:items-start" id="main">
           {/* Left: copy */}
           <div>
@@ -233,13 +275,8 @@ export default function Page() {
               transition={{ duration: 0.6 }}
               className="max-w-xl"
             >
-              <p className="text-[12px] uppercase tracking-[0.22em] text-white/50">
-                USA₮ · Stable by Design
-              </p>
-              <h1
-                id="hero-title"
-                className="mt-3 text-4xl font-semibold leading-tight tracking-tight md:text-6xl"
-              >
+              <p className="text-[12px] uppercase tracking-[0.22em] text-white/50">USA₮ · Stable by Design</p>
+              <h1 id="hero-title" className="mt-3 text-4xl font-semibold leading-tight tracking-tight md:text-6xl">
                 Built for Stability.
                 <br className="hidden md:block" />
                 <span className="bg-gradient-to-r from-blue-300 to-red-300 bg-clip-text text-transparent">
@@ -247,19 +284,15 @@ export default function Page() {
                 </span>
               </h1>
               <p className="mt-5 text-base text-white/70 md:text-lg">
-                Buy or invest in USA₮ using popular cryptocurrencies. Modern UI, glass surfaces, and
-                subtle motion. <span className="text-white/60">This is a demo UI — no live on-chain logic.</span>
+                Buy or invest in USA₮ using popular cryptocurrencies. Modern UI, glass surfaces, subtle motion.
+                <span className="text-white/60"> Demo only — no on-chain logic.</span>
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <Button className="group bg-white text-black hover:bg-white/90" type="button">
                   Get Started
                   <ArrowUpRight className="ml-1.5 h-4 w-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </Button>
-                <Button
-                  variant="outline"
-                  className="border-white/10 bg-white/5 text-white hover:bg-white/10"
-                  type="button"
-                >
+                <Button variant="outline" className="border-white/10 bg-white/5 text-white hover:bg-white/10" type="button">
                   Learn more
                 </Button>
               </div>
@@ -289,11 +322,7 @@ export default function Page() {
                         <CardTitle className="text-white/90">Pay with crypto</CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-5">
-                        <div
-                          className="grid grid-cols-2 gap-3 md:grid-cols-3"
-                          role="group"
-                          aria-label="Select coin"
-                        >
+                        <div className="grid grid-cols-2 gap-3 md:grid-cols-3" role="group" aria-label="Select coin">
                           {COINS.map((c) => (
                             <button
                               key={c.code}
@@ -307,22 +336,16 @@ export default function Page() {
                               }
                               type="button"
                             >
-                              <div className="text-[12px] uppercase tracking-wider text-white/60">
-                                {c.name}
-                              </div>
+                              <div className="text-[12px] uppercase tracking-wider text-white/60">{c.name}</div>
                               <div className="text-lg font-semibold tracking-tight">{c.code}</div>
                             </button>
                           ))}
                         </div>
 
                         <div className="grid gap-3">
-                          <Label htmlFor="buy-amount" className="text-white/80">
-                            Amount ({coin})
-                          </Label>
+                          <Label htmlFor="buy-amount" className="text-white/80">Amount ({coin})</Label>
                           <div className="flex items-center gap-2">
-                            <div className="grid h-10 w-10 place-items-center rounded-lg border border-white/10 bg-white/5">
-                              <Coins className="h-4 w-4" />
-                            </div>
+                            <div className="grid h-10 w-10 place-items-center rounded-lg border border-white/10 bg-white/5"><Coins className="h-4 w-4" /></div>
                             <Input
                               id="buy-amount"
                               type="number"
@@ -334,17 +357,9 @@ export default function Page() {
                               placeholder="1000"
                               aria-describedby="buy-help"
                             />
-                            <Button
-                              className="bg-white text-black hover:bg-white/90"
-                              type="button"
-                              onClick={handleFakePay}
-                            >
-                              Pay
-                            </Button>
+                            <Button className="bg-white text-black hover:bg-white/90" type="button" onClick={handleFakePay}>Pay</Button>
                           </div>
-                          <p id="buy-help" className="text-xs text-white/50">
-                            Rates are calculated at the next step. Supported: Ethereum, Tron, Solana.
-                          </p>
+                          <p id="buy-help" className="text-xs text-white/50">Rates are calculated at the next step. Supported: Ethereum, Tron, Solana.</p>
                         </div>
                       </CardContent>
                     </Card>
@@ -356,20 +371,15 @@ export default function Page() {
                       <CardHeader className="flex flex-col gap-2 pb-2">
                         <CardTitle className="text-white/90">Yield calculator</CardTitle>
                         <div className="flex items-center gap-2 text-sm text-white/70">
-                          <Percent className="h-4 w-4" /> Fixed rate:
-                          <span className="ml-1 font-medium text-white">25% / mo</span>
+                          <Percent className="h-4 w-4" /> Fixed rate: <span className="ml-1 font-medium text-white">25% / mo</span>
                           <Badge className="ml-2 bg-white/10 text-white">Demo</Badge>
                         </div>
                       </CardHeader>
                       <CardContent className="space-y-5">
                         <div className="grid gap-3">
-                          <Label htmlFor="inv-amount" className="text-white/80">
-                            Investment amount (USA₮)
-                          </Label>
+                          <Label htmlFor="inv-amount" className="text-white/80">Investment amount (USA₮)</Label>
                           <div className="flex items-center gap-2">
-                            <div className="grid h-10 w-10 place-items-center rounded-lg border border-white/10 bg-white/5">
-                              <DollarSign className="h-4 w-4" />
-                            </div>
+                            <div className="grid h-10 w-10 place-items-center rounded-lg border border-white/10 bg-white/5"><DollarSign className="h-4 w-4" /></div>
                             <Input
                               id="inv-amount"
                               type="number"
@@ -392,18 +402,14 @@ export default function Page() {
                         </div>
 
                         <div className="grid gap-3">
-                          <Label htmlFor="months" className="text-white/80">
-                            Term (months)
-                          </Label>
+                          <Label htmlFor="months" className="text-white/80">Term (months)</Label>
                           <Input
                             id="months"
                             type="number"
                             min={1}
                             inputMode="numeric"
                             value={safeMonths}
-                            onChange={(e) =>
-                              setMonths(Math.max(1, Math.floor(Number(e.target.value))))
-                            }
+                            onChange={(e) => setMonths(Math.max(1, Math.floor(Number(e.target.value))))}
                             className="bg-white/5 text-white placeholder:text-white/40"
                           />
                           <Slider
@@ -417,22 +423,13 @@ export default function Page() {
                         </div>
 
                         <div className="flex items-center gap-2">
-                          <Toggle
-                            pressed={compound}
-                            onPressedChange={setCompound}
-                            aria-pressed={compound}
-                            className="border-white/20 bg-white/10"
-                          >
+                          <Toggle pressed={compound} onPressedChange={setCompound} aria-pressed={compound} className="border-white/20 bg-white/10">
                             {compound ? "Compound" : "Simple"}
                           </Toggle>
                           <span className="text-sm text-white/60">Calculation mode</span>
                         </div>
 
-                        <div
-                          className="grid gap-2 rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-4"
-                          aria-live="polite"
-                          aria-atomic="true"
-                        >
+                        <div className="grid gap-2 rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-4" aria-live="polite" aria-atomic="true">
                           <div className="flex items-center justify-between text-white/70">
                             <span>Expected profit</span>
                             <span className="text-white">{formatNumber(profit)} USA₮</span>
@@ -447,9 +444,7 @@ export default function Page() {
                           <Button className="bg-white text-black hover:bg-white/90" type="button" onClick={handleFakeInvest}>
                             Invest <ChevronRight className="ml-1.5 h-4 w-4" />
                           </Button>
-                          <p className="text-xs text-white/60">
-                            Demo terms. Availability depends on jurisdiction and risk.
-                          </p>
+                          <p className="text-xs text-white/60">Demo terms. Availability depends on jurisdiction and risk.</p>
                         </div>
                       </CardContent>
                     </Card>
@@ -460,11 +455,7 @@ export default function Page() {
           </div>
         </div>
 
-        {actionMsg && (
-          <div className="sr-only" role="status" aria-live="polite">
-            {actionMsg}
-          </div>
-        )}
+        {actionMsg && <div className="sr-only" role="status" aria-live="polite">{actionMsg}</div>}
       </section>
 
       {/* Features */}
@@ -477,9 +468,7 @@ export default function Page() {
               style={{ boxShadow: "0 6px 32px rgba(0,0,0,0.35)" }}
             >
               <CardHeader className="flex flex-row items-center gap-3">
-                <div className="grid h-10 w-10 place-items-center rounded-xl bg-white/10">
-                  {f.icon}
-                </div>
+                <div className="grid h-10 w-10 place-items-center rounded-xl bg-white/10">{f.icon}</div>
                 <CardTitle className="text-white/90">{f.title}</CardTitle>
               </CardHeader>
               <CardContent className="text-white/70">{f.desc}</CardContent>
@@ -493,8 +482,7 @@ export default function Page() {
         <div className="mb-6 flex items-end justify-between">
           <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">Plans</h2>
           <div className="text-sm text-white/60">
-            25% / month · 1-month term
-            <Badge className="ml-2 bg-white/10 text-white">Demo</Badge>
+            25% / month · 1-month term <Badge className="ml-2 bg-white/10 text-white">Demo</Badge>
           </div>
         </div>
         <div className="grid gap-6 md:grid-cols-3">
@@ -521,19 +509,11 @@ export default function Page() {
                 <div className="text-white/70">Term: {p.term}</div>
                 <div className="text-white/70">Lock: {p.lock}</div>
                 <ul className="space-y-2 text-sm text-white/70">
-                  <li className="flex items-center gap-2">
-                    <Check className="h-4 w-4" /> Daily accrual
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="h-4 w-4" /> Payout in USA₮
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="h-4 w-4" /> Low fees
-                  </li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4" /> Daily accrual</li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4" /> Payout in USA₮</li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4" /> Low fees</li>
                 </ul>
-                <Button className="w-full bg-white text-black hover:bg-white/90" type="button">
-                  Choose
-                </Button>
+                <Button className="w-full bg-white text-black hover:bg-white/90" type="button">Choose</Button>
               </CardContent>
             </Card>
           ))}
@@ -542,10 +522,7 @@ export default function Page() {
 
       {/* Stats */}
       <section id="stats" className="mx-auto mt-20 max-w-7xl px-4">
-        <div
-          className="rounded-3xl border border-white/10 bg-white/5 p-6 text-white"
-          style={{ boxShadow: "0 8px 36px rgba(0,0,0,0.35)" }}
-        >
+        <div className="rounded-3xl border border-white/10 bg-white/5 p-6 text-white" style={{ boxShadow: "0 8px 36px rgba(0,0,0,0.35)" }}>
           <div className="grid gap-6 md:grid-cols-4">
             <div>
               <div className="text-sm text-white/60">24h volume</div>
@@ -564,9 +541,7 @@ export default function Page() {
               <div className="text-3xl font-semibold">{formatNumber(networksAnimated)}</div>
             </div>
           </div>
-          <p className="mt-4 text-xs text-white/50">
-            Demo data for UI showcase. Connect real sources and attestations in production.
-          </p>
+          <p className="mt-4 text-xs text-white/50">Demo data for UI showcase. Connect real sources and attestations in production.</p>
         </div>
       </section>
 
@@ -575,22 +550,10 @@ export default function Page() {
         <h2 className="mb-6 text-2xl font-semibold tracking-tight md:text-3xl">FAQ</h2>
         <div className="divide-y divide-white/10 rounded-3xl border border-white/10 bg-white/5">
           {[
-            {
-              q: "What is USA₮?",
-              a: "USA₮ is the USATether stablecoin focused on stability and transparency. This site is a UI demo without on-chain logic.",
-            },
-            {
-              q: "Is 25% monthly real?",
-              a: "The rate is illustrative for mock/demo purposes only. Actual terms depend on legal model, risks, and your jurisdiction.",
-            },
-            {
-              q: "Which cryptocurrencies are supported?",
-              a: "Bitcoin, Ethereum, Tether (USDT), USD Coin (USDC), Solana, TRON, and more — depending on the integration.",
-            },
-            {
-              q: "Are there risks?",
-              a: "All crypto operations involve risk. Past performance doesn’t guarantee future results. Do your own research.",
-            },
+            { q: "What is USA₮?", a: "USA₮ is the USATether stablecoin focused on stability and transparency. This site is a UI demo without on-chain logic." },
+            { q: "Is 25% monthly real?", a: "The rate is illustrative for mock/demo purposes only. Actual terms depend on legal model, risks, and your jurisdiction." },
+            { q: "Which cryptocurrencies are supported?", a: "Bitcoin, Ethereum, Tether (USDT), USD Coin (USDC), Solana, TRON, and more — depending on the integration." },
+            { q: "Are there risks?", a: "All crypto operations involve risk. Past performance doesn’t guarantee future results. Do your own research." },
           ].map((item, i) => (
             <details key={i} className="group px-6 py-5">
               <summary className="flex cursor-pointer list-none items-center justify-between">
@@ -605,27 +568,14 @@ export default function Page() {
 
       {/* CTA */}
       <section className="mx-auto my-20 max-w-7xl px-4">
-        <div
-          className="grid items-center gap-6 rounded-3xl border border-white/10 bg-gradient-to-br from-blue-500/10 to-red-500/10 p-6 md:grid-cols-2"
-          style={{ boxShadow: "0 0 40px rgba(59,130,246,0.15)" }}
-        >
+        <div className="grid items-center gap-6 rounded-3xl border border-white/10 bg-gradient-to-br from-blue-500/10 to-red-500/10 p-6 md:grid-cols-2" style={{ boxShadow: "0 0 40px rgba(59,130,246,0.15)" }}>
           <div>
             <h3 className="text-2xl font-semibold">Ready to start?</h3>
-            <p className="mt-2 text-white/70">
-              Create an account and connect your wallet. First operations take minutes.
-            </p>
+            <p className="mt-2 text-white/70">Create an account and connect your wallet. First operations take minutes.</p>
           </div>
           <div className="flex flex-wrap items-center justify-end gap-3">
-            <Button
-              variant="outline"
-              className="border-white/20 bg-white/10 text-white hover:bg-white/20"
-              type="button"
-            >
-              Open account
-            </Button>
-            <Button className="bg-white text-black hover:bg-white/90" type="button">
-              Connect wallet
-            </Button>
+            <Button variant="outline" className="border-white/20 bg-white/10 text-white hover:bg-white/20" type="button">Open account</Button>
+            <Button className="bg-white text-black hover:bg-white/90" type="button">Connect wallet</Button>
           </div>
         </div>
       </section>
@@ -639,20 +589,13 @@ export default function Page() {
               <span>USA₮</span>
             </div>
             <div className="flex items-center gap-3">
-              <a className="hover:text-white" href="#">
-                Policy
-              </a>
-              <a className="hover:text-white" href="#">
-                Terms
-              </a>
-              <a className="hover:text-white" href="#">
-                Support
-              </a>
+              <a className="hover:text-white" href="#">Policy</a>
+              <a className="hover:text-white" href="#">Terms</a>
+              <a className="hover:text-white" href="#">Support</a>
             </div>
           </div>
           <p className="mt-4 text-xs leading-relaxed text-white/50">
-            *Disclaimer: This UI is a demo and not financial advice or an offer. Rate shown is
-            illustrative. Product may be unavailable in your region. Please assess risks.
+            *Disclaimer: This UI is a demo and not financial advice or an offer. Rate shown is illustrative. Product may be unavailable in your region. Please assess risks.
           </p>
         </div>
       </footer>
