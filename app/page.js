@@ -406,7 +406,10 @@ export default function Page() {
       <section id="invest" className="mx-auto mt-16 max-w-7xl px-4">
         <div className="mb-6 flex items-end justify-between">
           <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">Plans</h2>
-          <div className="text-sm text-white/60">25% / month for 1 month term <Badge className="ml-2 bg-white/10 text-white">Demo</</div>
+          <div className="text-sm text-white/60">
+  25% / month for 1 month term
+  <Badge className="ml-2 bg-white/10 text-white">Demo</Badge>
+</div>
         </div>
         <div className="grid gap-6 md:grid-cols-3">
           {PLANS.map((p) => (
