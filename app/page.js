@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion as fm } from "framer-motion";
@@ -144,7 +143,6 @@ export default function Page() {
   }, [actionMsg]);
 
   const selectCoin = useCallback((c) => setCoin(c), []);
-
   const handleFakePay = () => setActionMsg(`Payment flow opened for ${formatNumber(buyAmount)} ${coin}`);
   const handleFakeInvest = () => setActionMsg(`Invest flow opened for ${formatNumber(safeInvestAmount)} USA₮`);
 
@@ -206,9 +204,11 @@ export default function Page() {
             <USFlag className="h-20 w-40" />
           </div>
         </div>
+
+        {/* ВАЖНО: фиксируем выравнивание по верху на десктопе */}
         <div className="grid gap-10 md:grid-cols-2 md:items-start" id="main">
           <div>
-            <MotionDiv
+            <(reduced ? "div" : fm.div)
               initial={!reduced ? { y: 12, opacity: 0 } : undefined}
               animate={!reduced ? { y: 0, opacity: 1 } : undefined}
               transition={{ duration: 0.6 }}
@@ -216,7 +216,7 @@ export default function Page() {
               <h1 id="hero-title" className="text-4xl font-bold leading-tight tracking-tight md:text-6xl">
                 Invest in Stability with <span className="bg-gradient-to-r from-blue-300 to-red-400 bg-clip-text text-transparent">USA₮</span>
               </h1>
-            </MotionDiv>
+            </(reduced ? "div" : fm.div)>
             <p className="mt-5 max-w-xl text-base text-white/70 md:text-lg">
               Buy and invest in the USA₮ stablecoin. Deposit in popular cryptocurrencies and earn <span className="text-white">up to 25% monthly</span>. <span className="text-white/60">(Demo only)</span>
             </p>
@@ -234,114 +234,153 @@ export default function Page() {
             </div>
           </div>
 
+          {/* Карточка с табами — резерв высоты и растяжение контента */}
           <div className="relative">
-            <MotionDiv
+            <(reduced ? "div" : fm.div)
               initial={!reduced ? { opacity: 0, scale: 0.98 } : undefined}
               animate={!reduced ? { opacity: 1, scale: 1 } : undefined}
               transition={{ duration: 0.7 }}
-              className="rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-6 shadow-2xl backdrop-blur-xl"
+              className="rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-6 shadow-2xl backdrop-blur-xl md:min-h-[540px] flex flex-col"
             >
-              <Tabs defaultValue="buy" className="w-full">
+              <Tabs defaultValue="buy" className="w-full flex-1 flex flex-col">
                 <TabsList className="grid w-full grid-cols-2 bg-white/10 sticky top-0" aria-label="Buy or Invest">
                   <TabsTrigger value="buy" id="tab-buy" aria-controls="panel-buy">Buy USA₮</TabsTrigger>
                   <TabsTrigger value="invest" id="tab-invest" aria-controls="panel-invest">Invest</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="buy" id="panel-buy" className="mt-4" role="tabpanel" aria-labelledby="tab-buy">
-                  <Card className="border-white/10 bg-white/5 text-white">
-                    <CardHeader>
-                      <CardTitle className="text-white/90">Pay with Crypto</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="grid grid-cols-2 gap-4 md:grid-cols-3" role="group" aria-label="Select coin">
-                        {COINS.map((c) => (
-                          <button
-                            key={c.code}
-                            onClick={() => selectCoin(c.code)}
-                            aria-pressed={coin === c.code}
-                            className={"rounded-xl border p-3 text-left transition " + (coin === c.code ? "border-blue-400/60 bg-blue-400/10" : "border-white/10 hover:border-white/20")}
-                            type="button"
-                          >
-                            <div className="text-sm text-white/70">{c.name}</div>
-                            <div className="text-lg font-semibold tracking-tight">{c.code}</div>
-                          </button>
-                        ))}
-                      </div>
-                      <div className="grid gap-3">
-                        <Label htmlFor="buy-amount" className="text-white/80">Amount ({coin})</Label>
+                {/* Контейнер панелей занимает всю оставшуюся высоту */}
+                <div className="mt-4 flex-1">
+                  {/* Buy */}
+                  <TabsContent value="buy" id="panel-buy" className="h-full" role="tabpanel" aria-labelledby="tab-buy">
+                    <Card className="border-white/10 bg-white/5 text-white h-full">
+                      <CardHeader>
+                        <CardTitle className="text-white/90">Pay with Crypto</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="grid grid-cols-2 gap-4 md:grid-cols-3" role="group" aria-label="Select coin">
+                          {COINS.map((c) => (
+                            <button
+                              key={c.code}
+                              onClick={() => selectCoin(c.code)}
+                              aria-pressed={coin === c.code}
+                              className={"rounded-xl border p-3 text-left transition " + (coin === c.code ? "border-blue-400/60 bg-blue-400/10" : "border-white/10 hover:border-white/20")}
+                              type="button"
+                            >
+                              <div className="text-sm text-white/70">{c.name}</div>
+                              <div className="text-lg font-semibold tracking-tight">{c.code}</div>
+                            </button>
+                          ))}
+                        </div>
+                        <div className="grid gap-3">
+                          <Label htmlFor="buy-amount" className="text-white/80">Amount ({coin})</Label>
+                          <div className="flex items-center gap-2">
+                            <div className="grid h-10 w-10 place-items-center rounded-lg border border-white/10 bg-white/5"><Coins className="h-4 w-4" /></div>
+                            <Input
+                              id="buy-amount"
+                              type="number"
+                              min={0}
+                              inputMode="decimal"
+                              value={buyAmount}
+                              onChange={(e) => setBuyAmount(Math.max(0, Number(e.target.value)))}
+                              className="bg-white/5 text-white placeholder:text-white/40"
+                              placeholder="1000"
+                              aria-describedby="buy-help"
+                            />
+                            <Button className="bg-white text-black hover:bg-white/90" type="button" aria-label="Pay now" onClick={handleFakePay}>Pay</Button>
+                          </div>
+                          <p id="buy-help" className="text-xs text-white/50">Rates and fees will be calculated at the next step. Supported networks: Ethereum, Tron, Solana, etc.</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+
+                  {/* Invest */}
+                  <TabsContent value="invest" id="panel-invest" className="h-full" role="tabpanel" aria-labelledby="tab-invest">
+                    <Card className="border-white/10 bg-white/5 text-white h-full">
+                      <CardHeader className="flex flex-col gap-2">
+                        <CardTitle className="text-white/90">Yield Calculator</CardTitle>
+                        <div className="flex items-center gap-2 text-sm text-white/70">
+                          <Percent className="h-4 w-4" /> Fixed Rate: <span className="ml-1 font-medium text-white">25% / mo</span>
+                          <Badge className="ml-2 bg-white/10 text-white">Demo</Badge>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="space-y-5">
+                        <div className="grid gap-3">
+                          <Label htmlFor="inv-amount" className="text-white/80">Investment Amount (USA₮)</Label>
+                          <div className="flex items-center gap-2">
+                            <div className="grid h-10 w-10 place-items-center rounded-lg border border-white/10 bg-white/5"><DollarSign className="h-4 w-4" /></div>
+                            <Input
+                              id="inv-amount"
+                              type="number"
+                              min={0}
+                              inputMode="decimal"
+                              value={safeInvestAmount}
+                              onChange={(e) => setInvestAmount(Math.max(0, Number(e.target.value)))}
+                              className="bg-white/5 text-white placeholder:text-white/40"
+                              placeholder="1000"
+                            />
+                          </div>
+                          <Slider
+                            value={[safeInvestAmount]}
+                            min={0}
+                            max={100000}
+                            step={100}
+                            onValueChange={(v) => setInvestAmount(v[0] ?? 0)}
+                            aria-label="Investment slider"
+                          />
+                        </div>
+
+                        <div className="grid gap-3">
+                          <Label htmlFor="months" className="text-white/80">Term (months)</Label>
+                          <Input
+                            id="months"
+                            type="number"
+                            min={1}
+                            inputMode="numeric"
+                            value={safeMonths}
+                            onChange={(e) => setMonths(Math.max(1, Math.floor(Number(e.target.value))))}
+                            className="bg-white/5 text-white placeholder:text-white/40"
+                          />
+                          <Slider
+                            value={[safeMonths]}
+                            min={1}
+                            max={24}
+                            step={1}
+                            onValueChange={(v) => setMonths(Math.max(1, Math.floor(v[0] ?? 1)))}
+                            aria-label="Term slider"
+                          />
+                        </div>
+
                         <div className="flex items-center gap-2">
-                          <div className="grid h-10 w-10 place-items-center rounded-lg border border-white/10 bg-white/5"><Coins className="h-4 w-4" /></div>
-                          <Input id="buy-amount" type="number" min={0} inputMode="decimal" value={buyAmount}
-                            onChange={(e) => setBuyAmount(Math.max(0, Number(e.target.value)))}
-                            className="bg-white/5 text-white placeholder:text-white/40" placeholder="1000" aria-describedby="buy-help" />
-                          <Button className="bg-white text-black hover:bg-white/90" type="button" aria-label="Pay now" onClick={handleFakePay}>Pay</Button>
+                          <Toggle pressed={compound} onPressedChange={setCompound} aria-pressed={compound} className="border-white/20 bg-white/10">
+                            {compound ? "Compound" : "Simple"}
+                          </Toggle>
+                          <span className="text-sm text-white/60">Calculation mode</span>
                         </div>
-                        <p id="buy-help" className="text-xs text-white/50">Rates and fees will be calculated at the next step. Supported networks: Ethereum, Tron, Solana, etc.</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
 
-                <TabsContent value="invest" id="panel-invest" className="mt-4" role="tabpanel" aria-labelledby="tab-invest">
-                  <Card className="border-white/10 bg-white/5 text-white">
-                    <CardHeader className="flex flex-col gap-2">
-                      <CardTitle className="text-white/90">Yield Calculator</CardTitle>
-                      <div className="flex items-center gap-2 text-sm text-white/70">
-                        <Percent className="h-4 w-4" /> Fixed Rate: <span className="ml-1 font-medium text-white">25% / mo</span>
-                        <Badge className="ml-2 bg-white/10 text-white">Demo</Badge>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-5">
-                      <div className="grid gap-3">
-                        <Label htmlFor="inv-amount" className="text-white/80">Investment Amount (USA₮)</Label>
-                        <div className="flex items-center gap-2">
-                          <div className="grid h-10 w-10 place-items-center rounded-lg border border-white/10 bg-white/5"><DollarSign className="h-4 w-4" /></div>
-                          <Input id="inv-amount" type="number" min={0} inputMode="decimal" value={safeInvestAmount}
-                            onChange={(e) => setInvestAmount(Math.max(0, Number(e.target.value)))}
-                            className="bg-white/5 text-white placeholder:text-white/40" placeholder="1000" />
+                        <div className="grid gap-2 rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-4" aria-live="polite" aria-atomic="true">
+                          <div className="flex items-center justify-between text-white/70">
+                            <span>Expected Profit</span>
+                            <span className="text-white">{formatNumber(profit)} USA₮</span>
+                          </div>
+                          <div className="flex items-center justify-between text-white/70">
+                            <span>Total Payout</span>
+                            <span className="text-white font-semibold">{formatNumber(total)} USA₮</span>
+                          </div>
                         </div>
-                        <Slider value={[safeInvestAmount]} min={0} max={100000} step={100}
-                          onValueChange={(v) => setInvestAmount(v[0] ?? 0)} aria-label="Investment slider" />
-                      </div>
 
-                      <div className="grid gap-3">
-                        <Label htmlFor="months" className="text-white/80">Term (months)</Label>
-                        <Input id="months" type="number" min={1} inputMode="numeric" value={safeMonths}
-                          onChange={(e) => setMonths(Math.max(1, Math.floor(Number(e.target.value))))}
-                          className="bg-white/5 text-white placeholder:text-white/40" />
-                        <Slider value={[safeMonths]} min={1} max={24} step={1}
-                          onValueChange={(v) => setMonths(Math.max(1, Math.floor(v[0] ?? 1)))} aria-label="Term slider" />
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <Toggle pressed={compound} onPressedChange={setCompound} aria-pressed={compound} className="border-white/20 bg-white/10">
-                          {compound ? "Compound" : "Simple"}
-                        </Toggle>
-                        <span className="text-sm text-white/60">Calculation mode</span>
-                      </div>
-
-                      <div className="grid gap-2 rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-4" aria-live="polite" aria-atomic="true">
-                        <div className="flex items-center justify-between text-white/70">
-                          <span>Expected Profit</span>
-                          <span className="text-white">{formatNumber(profit)} USA₮</span>
+                        <div className="flex items-center gap-3">
+                          <Button className="bg-gradient-to-r from-blue-400 to-red-500 text-black hover:from-blue-300 hover:to-red-400" type="button" aria-label="Invest" onClick={handleFakeInvest}>
+                            Invest <ChevronRight className="ml-1.5 h-4 w-4" />
+                          </Button>
+                          <p className="text-xs text-white/60">* Rate shown for demo purposes. Conditions depend on jurisdiction and risk.</p>
                         </div>
-                        <div className="flex items-center justify-between text-white/70">
-                          <span>Total Payout</span>
-                          <span className="text-white font-semibold">{formatNumber(total)} USA₮</span>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-3">
-                        <Button className="bg-gradient-to-r from-blue-400 to-red-500 text-black hover:from-blue-300 hover:to-red-400" type="button" aria-label="Invest" onClick={handleFakeInvest}>
-                          Invest <ChevronRight className="ml-1.5 h-4 w-4" />
-                        </Button>
-                        <p className="text-xs text-white/60">* Rate shown for demo purposes. Conditions depend on jurisdiction and risk.</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+                </div>
               </Tabs>
-            </MotionDiv>
+            </(reduced ? "div" : fm.div)>
           </div>
         </div>
 
