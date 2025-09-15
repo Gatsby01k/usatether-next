@@ -1,5 +1,6 @@
 "use client";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import { motion as fm } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -171,23 +172,25 @@ export default function Page() {
         )}
       </div>
 
+      {/* HEADER с Shine-вордмарком */}
       <header className="sticky top-0 z-30 backdrop-blur supports-[backdrop-filter]:bg-neutral-950/40">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
-          <div className="flex items-center gap-3">
-            <div className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-red-500/80 to-blue-500/80 shadow-lg ring-1 ring-white/10" aria-hidden>
-              <USFlag className="h-4 w-6" />
-            </div>
-            <div className="leading-tight" aria-label="USATether · USA₮">
-              <p className="text-sm text-white/60">USATether</p>
-              <p className="text-lg font-semibold tracking-tight">USA₮</p>
-            </div>
-          </div>
+          <Link href="/" className="flex items-center gap-3" aria-label="USATether — home">
+            <img
+              src="/brand/USATether-Wordmark-Shine.svg"
+              alt="USATether"
+              className="h-8 md:h-10 w-auto"
+              loading="eager"
+            />
+          </Link>
+
           <nav className="hidden gap-6 text-sm md:flex" aria-label="Primary">
             <a href="#buy" className="text-white/80 transition hover:text-white">Buy</a>
             <a href="#invest" className="text-white/80 transition hover:text-white">Invest</a>
             <a href="#stats" className="text-white/80 transition hover:text-white">Stats</a>
             <a href="#faq" className="text-white/80 transition hover:text-white">FAQ</a>
           </nav>
+
           <div className="flex items-center gap-3">
             <Badge className="bg-white/10 text-white backdrop-blur" aria-label="Demo rate badge">
               <Flame className="mr-1 h-3.5 w-3.5" /> 25% / mo
@@ -205,7 +208,7 @@ export default function Page() {
           </div>
         </div>
 
-        {/* ВАЖНО: фиксируем выравнивание по верху на десктопе */}
+        {/* фиксим выравнивание по верху на десктопе */}
         <div className="grid gap-10 md:grid-cols-2 md:items-start" id="main">
           <div>
             <MotionDiv
@@ -234,7 +237,7 @@ export default function Page() {
             </div>
           </div>
 
-          {/* Карточка с табами — резерв высоты и растяжение контента */}
+          {/* карточка с табами — резерв высоты и растяжение контента */}
           <div className="relative">
             <MotionDiv
               initial={!reduced ? { opacity: 0, scale: 0.98 } : undefined}
@@ -248,7 +251,7 @@ export default function Page() {
                   <TabsTrigger value="invest" id="tab-invest" aria-controls="panel-invest">Invest</TabsTrigger>
                 </TabsList>
 
-                {/* Контейнер панелей занимает всю оставшуюся высоту */}
+                {/* контейнер панелей занимает всю оставшуюся высоту */}
                 <div className="mt-4 flex-1">
                   {/* Buy */}
                   <TabsContent value="buy" id="panel-buy" className="h-full" role="tabpanel" aria-labelledby="tab-buy">
@@ -407,9 +410,9 @@ export default function Page() {
         <div className="mb-6 flex items-end justify-between">
           <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">Plans</h2>
           <div className="text-sm text-white/60">
-  25% / month for 1 month term
-  <Badge className="ml-2 bg-white/10 text-white">Demo</Badge>
-</div>
+            25% / month for 1 month term
+            <Badge className="ml-2 bg-white/10 text-white">Demo</Badge>
+          </div>
         </div>
         <div className="grid gap-6 md:grid-cols-3">
           {PLANS.map((p) => (
@@ -489,10 +492,10 @@ export default function Page() {
             <h3 className="text-2xl font-semibold">Ready to start?</h3>
             <p className="mt-2 text-white/70">Create an account and connect your wallet. First operations take minutes.</p>
           </div>
-        </div>
-        <div className="flex flex-wrap items-center justify-end gap-3 mt-4">
-          <Button variant="outline" className="border-white/20 bg-white/10 text-white hover:bg-white/20" type="button" aria-label="Open account">Open Account</Button>
-          <Button className="bg-white text-black hover:bg-white/90" type="button" aria-label="Connect wallet">Connect Wallet</Button>
+          <div className="flex flex-wrap items-center justify-end gap-3">
+            <Button variant="outline" className="border-white/20 bg-white/10 text-white hover:bg-white/20" type="button" aria-label="Open account">Open Account</Button>
+            <Button className="bg-white text-black hover:bg-white/90" type="button" aria-label="Connect wallet">Connect Wallet</Button>
+          </div>
         </div>
       </section>
 
